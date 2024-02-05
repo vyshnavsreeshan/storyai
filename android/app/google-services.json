@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "252595879541",
+    "project_id": "storyai-d73bb",
+    "storage_bucket": "storyai-d73bb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:252595879541:android:25c82216c1715347e5423c",
+        "android_client_info": {
+          "package_name": "com.example.storyai"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDrS-FBRM_3jp7scwMOKeyIWxk7rmfEm6k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
