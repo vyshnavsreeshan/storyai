@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:math';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:storyai/models/books.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -153,5 +154,40 @@ class FirestoreService {
           .toList()
           .cast<Books>();
     });
+  }
+
+  Future<List<String>> getPref() async {
+    final currentUser = FirebaseAuth.instance.currentUser;
+    final currentUserId = currentUser?.uid;
+
+    if (currentUserId != null) {
+      try {
+        final userPrefSnapshot = await FirebaseFirestore.instance
+            .collection('users')
+            .where('userId', isEqualTo: currentUserId)
+            .get();
+
+        if (userPrefSnapshot.docs.isNotEmpty) {
+          // Assuming user preferences are stored as a list of strings in the Firestore document
+          final userPrefData = userPrefSnapshot.docs.first.data();
+          final userPrefList = userPrefData['preferences'] as List<dynamic>;
+
+          // Convert dynamic list to a list of strings
+          final List<String> preferences = userPrefList.cast<String>();
+
+          return preferences;
+        } else {
+          // No preferences found for the user
+          return [];
+        }
+      } catch (error) {
+        // Handle error if any
+        print('Error retrieving user preferences: $error');
+        return []; // Return an empty list in case of an error
+      }
+    } else {
+      // Current user not authenticated
+      return []; // Return an empty list
+    }
   }
 }
