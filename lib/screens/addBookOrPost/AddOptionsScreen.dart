@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:storyai/screens/addBookOrPost/addStoryScreen.dart';
 import 'package:storyai/theme/pallete.dart';
 import 'AddBookScreen.dart';
 import 'AddPostScreen.dart';
@@ -21,6 +22,16 @@ class AddOptionsScreen extends StatelessWidget {
       MaterialPageRoute(
         builder: (BuildContext context) {
           return AddPostScreen();
+        },
+      ),
+    );
+  }
+
+  void _handleStoryOption(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (BuildContext context) {
+          return AddStoryScreen();
         },
       ),
     );
@@ -72,10 +83,23 @@ class AddOptionsScreen extends StatelessWidget {
               _handleBookOption(context);
             },
           ),
+          ListTile(
+            leading: Icon(
+              Icons.post_add,
+              color: Pallete.brown,
+            ),
+            title: Text(
+              'Add Story',
+              style: TextStyle(color: Pallete.brown),
+            ),
+            onTap: () {
+              Navigator.of(context).pop();
+              _handleStoryOption(context);
+            },
+          ),
           SizedBox(height: 16.0),
         ],
       ),
     );
   }
 }
-
