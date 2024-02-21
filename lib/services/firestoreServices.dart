@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:storyai/models/StoryModel.dart';
 import 'package:storyai/models/books.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -14,6 +15,8 @@ class FirestoreService {
   final _firestore = FirebaseFirestore.instance;
   final CollectionReference _postsCollection =
       FirebaseFirestore.instance.collection('posts');
+  final CollectionReference _storiesCollection =
+      FirebaseFirestore.instance.collection('stories');
 
   Future<String> uploadImage(File image) async {
     final imageId = Uuid().v4();
@@ -78,7 +81,6 @@ class FirestoreService {
     if (startAfter != null) {
       query = query.startAfterDocument(startAfter);
     }
-
     QuerySnapshot querySnapshot = await query.get();
     return querySnapshot.docs.map((doc) {
       return Post(
@@ -92,6 +94,47 @@ class FirestoreService {
         avatarUrl: doc['avatarUrl'],
       );
     }).toList();
+  }
+
+  Future<List<StoryModel>> getStories(
+      {int? limit, DocumentSnapshot? startAfter}) async {
+    try {
+      final List<String> userPrefs = await getPref(); // Get user preferences
+      Query query = _storiesCollection.orderBy('createdAt', descending: true);
+
+      if (limit != null) {
+        query = query.limit(limit);
+      }
+
+      if (startAfter != null) {
+        query = query.startAfterDocument(startAfter);
+      }
+
+      QuerySnapshot querySnapshot = await query.get();
+
+      List<StoryModel> stories = querySnapshot.docs
+          .map((doc) => StoryModel(
+                documentSnapshot: doc,
+                story: doc['story'],
+                genres: List<String>.from(doc['genres']),
+                name: doc['username'],
+                audioUrl: doc['audioUrl'],
+                createdAt: (doc['createdAt'] as Timestamp).toDate(),
+              ))
+          .toList();
+
+      // Filter stories based on user preferences
+      List<StoryModel> filteredStories = stories.where((story) {
+        // Check if any genre of the story matches with user preferences
+        return story.genres.any((genre) => userPrefs.contains(genre));
+      }).toList();
+
+      return filteredStories;
+    } catch (error) {
+      // Handle error if any
+      print('Error retrieving stories: $error');
+      return []; // Return an empty list in case of an error
+    }
   }
 
   Stream<List<Books>> getBooks(GeoPoint? userLocation) {
