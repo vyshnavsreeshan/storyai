@@ -120,6 +120,7 @@ class FirestoreService {
                 name: doc['username'],
                 audioUrl: doc['audioUrl'],
                 createdAt: (doc['createdAt'] as Timestamp).toDate(),
+                title: doc['title'],
               ))
           .toList();
 

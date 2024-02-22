@@ -12,6 +12,7 @@ class Story {
   final String name;
   final String? audioUrl;
   final DateTime createdAt;
+  final String title;
 
   Story({
     required this.story,
@@ -19,6 +20,7 @@ class Story {
     required this.name,
     this.audioUrl,
     required this.createdAt,
+    required this.title,
   });
 
   Map<String, dynamic> toMap() {
@@ -26,6 +28,7 @@ class Story {
       'story': story,
       'genres': genres,
       'audioUrl': audioUrl,
+      'title': title
     };
   }
 }
@@ -39,6 +42,7 @@ class AddStoryScreen extends StatefulWidget {
 
 class _AddStoryScreenState extends State<AddStoryScreen> {
   TextEditingController _textEditingController = TextEditingController();
+  TextEditingController _titleEditingController = TextEditingController();
   TextEditingController _typeEditingController = TextEditingController();
   bool _storyEntered = false;
   bool _typeEntered = false;
@@ -48,6 +52,7 @@ class _AddStoryScreenState extends State<AddStoryScreen> {
   File? _audioFile;
   bool _isUploading = false;
   bool _isUploaded = false;
+  bool _titleEntered = false;
 
   final List<String> availableGenres = [
     'Adventure',
@@ -74,6 +79,7 @@ class _AddStoryScreenState extends State<AddStoryScreen> {
           name: name,
           audioUrl: '',
           createdAt: DateTime.now(),
+          title: _titleEditingController.text,
         );
 
         try {
@@ -99,6 +105,7 @@ class _AddStoryScreenState extends State<AddStoryScreen> {
           _textEditingController.clear();
           _selectedGenres.clear();
           _storyEntered = false;
+          _titleEntered = false;
 
           // Navigate to the previous screen after upload
           Navigator.pop(context);
@@ -201,9 +208,9 @@ class _AddStoryScreenState extends State<AddStoryScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               TextField(
-                controller: _textEditingController,
+                controller: _titleEditingController,
                 decoration: InputDecoration(
-                  hintText: 'Write your short story here',
+                  hintText: 'Title of the Story',
                   focusedBorder: UnderlineInputBorder(
                     borderSide: BorderSide(
                       color: Colors.black,
@@ -211,13 +218,34 @@ class _AddStoryScreenState extends State<AddStoryScreen> {
                   ),
                 ),
                 maxLines: null,
-                maxLength: 1000,
+                maxLength: 64,
                 onChanged: (text) {
                   setState(() {
-                    _storyEntered = text.isNotEmpty;
+                    _titleEntered = text.isNotEmpty;
                   });
                 },
               ),
+              SizedBox(height: 20),
+              _titleEntered
+                  ? TextField(
+                      controller: _textEditingController,
+                      decoration: InputDecoration(
+                        hintText: 'Write your short story here',
+                        focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Colors.black,
+                          ),
+                        ),
+                      ),
+                      maxLines: null,
+                      maxLength: 1000,
+                      onChanged: (text) {
+                        setState(() {
+                          _storyEntered = text.isNotEmpty;
+                        });
+                      },
+                    )
+                  : SizedBox(),
               SizedBox(height: 20),
               _storyEntered
                   ? Column(

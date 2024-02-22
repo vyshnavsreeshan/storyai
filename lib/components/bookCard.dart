@@ -120,13 +120,19 @@ class _BookCardState extends State<BookCard> {
   @override
   Widget build(BuildContext context) {
     String? currentUserId = FirebaseAuth.instance.currentUser?.uid;
-    return Container(
-      margin: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-      child: Stack(
-        children: [
-          Padding(
-            padding: EdgeInsets.all(10),
-            child: Column(
+    return ClipRRect(
+      child: Container(
+        margin: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+        padding: EdgeInsets.all(20),
+        decoration: BoxDecoration(
+            border: Border.all(
+              color: Pallete.brown, // Specify the color of the border
+              width: 2, // Specify the thickness of the border
+            ),
+            borderRadius: BorderRadius.circular(20)),
+        child: Stack(
+          children: [
+            Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 GestureDetector(
@@ -272,39 +278,39 @@ class _BookCardState extends State<BookCard> {
                 ),
               ],
             ),
-          ),
-          Positioned(
-            top: 10,
-            right: 60,
-            child: InkWell(
-              onTap: () {
-                launchGoogleMaps(
-                  widget.book.bookLocation.latitude,
-                  widget.book.bookLocation.longitude,
-                );
-              },
-              child: widget.book.isAvailable
-                  ? Icon(
-                      Icons.pin_drop_rounded,
-                      size: 32,
-                      color: Pallete.brown,
-                    )
-                  : null,
-            ),
-          ),
-          Positioned(
-            top: 10,
-            right: 10,
-            child: InkWell(
-              onTap: _navigateToChatRoom,
-              child: Icon(
-                Icons.mail_rounded,
-                size: 32,
-                color: Pallete.brown,
+            Positioned(
+              top: 10,
+              right: 60,
+              child: InkWell(
+                onTap: () {
+                  launchGoogleMaps(
+                    widget.book.bookLocation.latitude,
+                    widget.book.bookLocation.longitude,
+                  );
+                },
+                child: widget.book.isAvailable
+                    ? Icon(
+                        Icons.pin_drop_rounded,
+                        size: 32,
+                        color: Pallete.brown,
+                      )
+                    : null,
               ),
             ),
-          ),
-        ],
+            Positioned(
+              top: 10,
+              right: 10,
+              child: InkWell(
+                onTap: _navigateToChatRoom,
+                child: Icon(
+                  Icons.mail_rounded,
+                  size: 32,
+                  color: Pallete.brown,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

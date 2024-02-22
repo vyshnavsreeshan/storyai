@@ -7,6 +7,7 @@ class StoryModel {
   final String name;
   final String? audioUrl;
   final DateTime createdAt;
+  final String title;
 
   StoryModel({
     required this.documentSnapshot,
@@ -15,5 +16,6 @@ class StoryModel {
     required this.name,
     this.audioUrl,
     required this.createdAt,
+    required this.title,
   });
 }

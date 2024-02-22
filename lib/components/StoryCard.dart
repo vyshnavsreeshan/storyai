@@ -69,7 +69,7 @@ class _StoryCardState extends State<StoryCard> {
           children: [
             Center(
               child: Text(
-                widget.story.name,
+                widget.story.title,
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -89,6 +89,15 @@ class _StoryCardState extends State<StoryCard> {
                   )
                   .toList(),
             ),
+            SizedBox(height: 10),
+            Text(
+              "Posted by: " + widget.story.name,
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+            SizedBox(height: 10),
             if (widget.story.audioUrl != null)
               Column(
                 children: [
