@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:storyai/screens/homeScreen/HomeScreen.dart'; // Import the HomeScreen widget
+import 'package:storyai/screens/homeScreen/HomeScreen.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({Key? key}) : super(key: key);
@@ -118,38 +117,34 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             Wrap(
               spacing: 8.0,
               runSpacing: 8.0,
-              children: filteredGenres
-                  .take(maxDisplayedGenres)
-                  .map((genre) {
-                    bool isSelected = selectedGenres.contains(genre);
-                    return GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          if (isSelected) {
-                            selectedGenres.remove(genre);
-                          } else {
-                            selectedGenres.add(genre);
-                          }
-                        });
-                      },
-                      child: Container(
-                        padding: EdgeInsets.symmetric(
-                            vertical: 12, horizontal: 16),
-                        decoration: BoxDecoration(
-                          color: isSelected ? Colors.blue : null,
-                          borderRadius: BorderRadius.circular(20),
-                          border: Border.all(color: Colors.blue),
-                        ),
-                        child: Text(
-                          genre,
-                          style: TextStyle(
-                            color: isSelected ? Colors.white : null,
-                          ),
-                        ),
+              children: filteredGenres.take(maxDisplayedGenres).map((genre) {
+                bool isSelected = selectedGenres.contains(genre);
+                return GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      if (isSelected) {
+                        selectedGenres.remove(genre);
+                      } else {
+                        selectedGenres.add(genre);
+                      }
+                    });
+                  },
+                  child: Container(
+                    padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                    decoration: BoxDecoration(
+                      color: isSelected ? Colors.blue : null,
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(color: Colors.blue),
+                    ),
+                    child: Text(
+                      genre,
+                      style: TextStyle(
+                        color: isSelected ? Colors.white : null,
                       ),
-                    );
-                  })
-                  .toList(),
+                    ),
+                  ),
+                );
+              }).toList(),
             ),
             SizedBox(height: 20),
             ElevatedButton(
@@ -225,8 +220,7 @@ class GenreSearchDelegate extends SearchDelegate<String> {
     final List<String> searchResults = query.isEmpty
         ? availableGenres
         : availableGenres
-            .where((genre) =>
-                genre.toLowerCase().contains(query.toLowerCase()))
+            .where((genre) => genre.toLowerCase().contains(query.toLowerCase()))
             .toList();
 
     return ListView.builder(

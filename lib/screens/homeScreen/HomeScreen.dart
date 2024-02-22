@@ -6,6 +6,7 @@ import 'package:storyai/screens/storeScreen/Store.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:storyai/screens/story/storyScreen.dart';
+import 'package:storyai/services/firestoreServices.dart';
 import 'package:storyai/theme/pallete.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -17,15 +18,23 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   String? currentUserId;
+  List? userPreferences;
 
   @override
   void initState() {
     super.initState();
     getCurrentUserId();
+    loadUserPreferences();
   }
 
   Future<void> getCurrentUserId() async {
     currentUserId = FirebaseAuth.instance.currentUser?.uid;
+  }
+
+  Future<void> loadUserPreferences() async {
+    // Call getPref method to retrieve user preferences
+    List<String> userPreferences = await FirestoreService().getPref();
+    print(userPreferences);
   }
 
   int _pageIndex = 0;

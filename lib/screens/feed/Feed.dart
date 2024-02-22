@@ -1,5 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:storyai/components/StoryCard.dart';
+import 'package:storyai/models/StoryModel.dart';
 import 'package:storyai/services/firestoreServices.dart';
 import 'package:storyai/theme/pallete.dart';
 import '../../components/postCard.dart';
@@ -12,11 +14,12 @@ class Feed extends StatefulWidget {
 
 class _FeedState extends State<Feed> with AutomaticKeepAliveClientMixin {
   final _firestoreService = FirestoreService();
-  List<Post> _posts = [];
+  List<dynamic> _feedItems = [];
   bool _isFetching = false;
   String _errorMessage = '';
   int _postLimit = 2;
-  DocumentSnapshot? _lastDocument;
+  DocumentSnapshot? _lastPostDocument;
+  DocumentSnapshot? _lastStoryDocument;
   final ScrollController _scrollController = ScrollController();
 
   @override
@@ -25,22 +28,19 @@ class _FeedState extends State<Feed> with AutomaticKeepAliveClientMixin {
   @override
   void initState() {
     super.initState();
-    if (_posts.isEmpty) {
-      // Fetch posts only if the list is empty
-      _fetchPosts();
-    }
+    _fetchData();
 
     // Add a listener to the scroll controller
     _scrollController.addListener(() {
       // Check if the user has reached the end of the list
       if (_scrollController.position.pixels ==
           _scrollController.position.maxScrollExtent) {
-        _fetchPosts();
+        _fetchData();
       }
     });
   }
 
-  Future<void> _fetchPosts() async {
+  Future<void> _fetchData() async {
     if (_isFetching) {
       return;
     }
@@ -53,22 +53,43 @@ class _FeedState extends State<Feed> with AutomaticKeepAliveClientMixin {
     try {
       List<Post> fetchedPosts = await _firestoreService.getPosts(
         limit: _postLimit,
-        startAfter: _lastDocument,
+        startAfter: _lastPostDocument,
       );
 
       if (fetchedPosts.isNotEmpty) {
-        _lastDocument = fetchedPosts.last.documentSnapshot;
+        // If there are fetched posts, update the last post document
+        _lastPostDocument = fetchedPosts.last.documentSnapshot;
       }
 
       print('Fetched ${fetchedPosts.length} posts.');
+
+      // Fetch and sort stories
+      List<StoryModel> fetchedStories = await _firestoreService.getStories(
+        limit: _postLimit,
+        startAfter: _lastStoryDocument,
+      );
+
+      if (fetchedStories.isNotEmpty) {
+        // If there are fetched stories, update the last story document
+        _lastStoryDocument = fetchedStories.last.documentSnapshot;
+      }
+
+      print('Fetched ${fetchedStories.length} stories.');
+
+      // Combine fetched posts and stories
+      List<dynamic> combinedItems = [...fetchedPosts, ...fetchedStories];
+
+      // Sort combined items by creation time in descending order
+      combinedItems.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+
+      // Append combined items to the end of the feed items list
       setState(() {
-        // Append new posts to the existing list
-        _posts.addAll(fetchedPosts);
+        _feedItems.addAll(combinedItems);
       });
     } catch (error) {
-      print('Error fetching posts: $error');
+      print('Error fetching data: $error');
       setState(() {
-        _errorMessage = 'Error fetching posts. Please try again.';
+        _errorMessage = 'Error fetching data. Please try again.';
       });
     } finally {
       setState(() {
@@ -77,16 +98,9 @@ class _FeedState extends State<Feed> with AutomaticKeepAliveClientMixin {
     }
   }
 
-  Future<void> _refreshPosts() async {
-    _lastDocument = null;
-    _posts.clear();
-    await _fetchPosts();
-  }
-
   @override
   Widget build(BuildContext context) {
-    super.build(
-        context); // Ensure that AutomaticKeepAliveClientMixin is correctly implemented
+    super.build(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -110,7 +124,12 @@ class _FeedState extends State<Feed> with AutomaticKeepAliveClientMixin {
         titleSpacing: 0,
       ),
       body: RefreshIndicator(
-        onRefresh: _refreshPosts,
+        onRefresh: () async {
+          _lastPostDocument = null;
+          _lastStoryDocument = null;
+          _feedItems.clear();
+          await _fetchData();
+        },
         child: _errorMessage.isNotEmpty
             ? Center(
                 child: Text(
@@ -120,16 +139,26 @@ class _FeedState extends State<Feed> with AutomaticKeepAliveClientMixin {
               )
             : ListView.builder(
                 controller: _scrollController,
-                itemCount: _posts.length + 1,
+                itemCount: _feedItems.length + 1,
                 itemBuilder: (context, index) {
-                  if (index < _posts.length) {
-                    final post = _posts[index];
-                    return PostCard(post: post);
-                  } else {
+                  if (index < _feedItems.length) {
+                    final item = _feedItems[index];
+                    if (item is Post) {
+                      return PostCard(post: item);
+                    } else if (item is StoryModel) {
+                      return StoryCard(story: item);
+                    }
+                  }
+
+                  // This is for the loading indicator
+                  if (index == _feedItems.length) {
                     return Center(
                       child: _isFetching ? CircularProgressIndicator() : null,
                     );
                   }
+
+                  // Return an empty container if index exceeds the total count
+                  return Container();
                 },
               ),
       ),
