@@ -8,6 +8,7 @@ environment:
 
 dependencies:
   animated_text_kit: ^4.2.2
+  audioplayers: ^5.2.1
   cloud_firestore: ^4.13.6
   file_picker: ^6.0.0
   firebase_auth: ^4.15.3
