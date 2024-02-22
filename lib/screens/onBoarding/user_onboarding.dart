@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:storyai/screens/homeScreen/HomeScreen.dart';
+import 'package:storyai/theme/pallete.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({Key? key}) : super(key: key);
@@ -71,24 +72,22 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('User Onboarding'),
-        actions: [
-          IconButton(
-            onPressed: () {
-              showSearch(
-                context: context,
-                delegate: GenreSearchDelegate(availableGenres),
-              ).then((selectedGenre) {
-                if (selectedGenre != null) {
-                  setState(() {
-                    selectedGenres.add(selectedGenre);
-                  });
-                }
-              });
-            },
-            icon: Icon(Icons.search),
+        backgroundColor: Colors.transparent,
+        centerTitle: true,
+        automaticallyImplyLeading: false,
+        elevation: 0,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios, color: Colors.black),
+          onPressed: () => Navigator.pop(context, false),
+        ),
+        title: Text(
+          "Add Story",
+          style: TextStyle(
+            color: Colors.black,
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
           ),
-        ],
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -144,6 +143,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 );
               },
               child: Text('Continue'),
+              style: ElevatedButton.styleFrom(backgroundColor: Pallete.brown),
             ),
           ],
         ),
