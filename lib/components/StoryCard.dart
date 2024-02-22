@@ -56,8 +56,11 @@ class _StoryCardState extends State<StoryCard> {
     return ClipRRect(
       // Adjust the radius as needed
       child: Container(
-        margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+        margin: EdgeInsets.symmetric(vertical: 10, horizontal: 12),
         padding: EdgeInsets.all(20),
+        constraints: BoxConstraints(
+          maxHeight: 550, // Set a fixed height for the card
+        ),
         decoration: BoxDecoration(
             border: Border.all(
               color: Pallete.brown, // Specify the color of the border
@@ -71,15 +74,19 @@ class _StoryCardState extends State<StoryCard> {
               child: Text(
                 widget.story.title,
                 style: TextStyle(
-                  fontSize: 18,
+                  fontSize: 22,
                   fontWeight: FontWeight.bold,
                 ),
               ),
             ),
             SizedBox(height: 10),
-            Text(
-              widget.story.story,
-              style: TextStyle(fontSize: 16),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Text(
+                  widget.story.story,
+                  style: TextStyle(fontSize: 20),
+                ),
+              ),
             ),
             SizedBox(height: 10),
             Wrap(

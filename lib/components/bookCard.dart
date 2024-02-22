@@ -122,7 +122,7 @@ class _BookCardState extends State<BookCard> {
     String? currentUserId = FirebaseAuth.instance.currentUser?.uid;
     return ClipRRect(
       child: Container(
-        margin: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+        margin: EdgeInsets.symmetric(vertical: 10, horizontal: 12),
         padding: EdgeInsets.all(20),
         decoration: BoxDecoration(
             border: Border.all(

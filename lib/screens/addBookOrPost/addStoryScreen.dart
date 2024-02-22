@@ -238,7 +238,7 @@ class _AddStoryScreenState extends State<AddStoryScreen> {
                         ),
                       ),
                       maxLines: null,
-                      maxLength: 1000,
+                      maxLength: 2000,
                       onChanged: (text) {
                         setState(() {
                           _storyEntered = text.isNotEmpty;
