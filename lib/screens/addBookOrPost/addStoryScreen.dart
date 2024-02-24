@@ -57,9 +57,58 @@ class _AddStoryScreenState extends State<AddStoryScreen> {
   final List<String> availableGenres = [
     'Adventure',
     'Mystery',
+    'Bedtime Stories',
     'Science Fiction',
     'Fantasy',
     'Romance',
+    'Kids',
+    'Historical Fiction',
+    'Thriller',
+    'Horror',
+    'Drama',
+    'Comedy',
+    'Western',
+    'Fantasy Adventure',
+    'Action',
+    'Psychological Thriller',
+    'Crime',
+    'War',
+    'Comedy',
+    'Space Opera',
+    'Cyberpunk',
+    'Superhero',
+    'Fairy Tale',
+    'Autobiography',
+    'Historical Romance',
+    'Post-Apocalyptic',
+    'Time Travel',
+    'Romantic Comedy',
+    'Alien Invasion',
+    'Travelogue',
+    'Medical Thriller',
+    'Magical Realism',
+    'Mythology',
+    'Biography',
+    'Social Commentary',
+    'Gothic',
+    'Political Fiction',
+    'Family Saga',
+    'Legal Drama',
+    'Urban Fantasy',
+    'Humor Satire',
+    'Domestic Noir',
+    'Paranormal',
+    'Techno-Thriller',
+    'Adventure Comedy',
+    'Space Western',
+    'Military Fiction',
+    'Alternate Reality',
+    'Religious Fiction',
+    'Philosophical Fiction',
+    'Hard Science Fiction',
+    'Soft Science Fiction',
+    'Military Science Fiction',
+    'Futuristic Fiction',
   ];
 
   void _addStoryToFirestore() async {
@@ -299,10 +348,12 @@ class _AddStoryScreenState extends State<AddStoryScreen> {
                           optionsViewBuilder: (BuildContext context,
                               AutocompleteOnSelected<String> onSelected,
                               Iterable<String> options) {
-                            return Align(
-                              alignment: Alignment.topLeft,
+                            return Container(
+                              alignment: Alignment
+                                  .topLeft, // Align options to the top-left
+                              color: Pallete.brown, // Set background color
                               child: Material(
-                                elevation: 4.0,
+                                color: Colors.transparent,
                                 child: SizedBox(
                                   height: 200.0,
                                   child: ListView.builder(
@@ -317,7 +368,12 @@ class _AddStoryScreenState extends State<AddStoryScreen> {
                                           onSelected(option);
                                         },
                                         child: ListTile(
-                                          title: Text(option),
+                                          title: Text(
+                                            option,
+                                            style: TextStyle(
+                                                color: Colors
+                                                    .white), // Set text color to white
+                                          ),
                                         ),
                                       );
                                     },
